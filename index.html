@@ -14,29 +14,35 @@
             <a href="#home">Home</a>
             <a href="#about">About</a>
             <a href="#experiences">Experiences</a>
-            <a href="#community">Community</a>
             <a href="#projects">Projects</a>
+            <a href="#articles">Articles</a>
             <a href="#honors">Honors</a>
         </div>
-        <a href="#contact" class="btn-outline">Keep in Touch</a>
+    <!-- Navigation Right Controls -->
+        <div class="nav-right">
+            <button id="theme-toggle" class="theme-toggle-btn">☀️ Light Mode</button>
+            <a href="#contact" class="btn-outline">Keep in Touch</a>
+        </div>    
     </nav>
 
     <section id="home" class="hero">
         <div class="hero-content">
             <h1>Sufal K.C</h1>
-            <div class="cursor-line">|</div>
+            <div class="typewriter-container">
+                <span id="typed-text"></span><span class="cursor">|</span>
+            </div>
             <a href="#" class="btn-primary">Resume &rarr;</a>
         </div>
         <div class="hero-image">
-            <img src="https://via.placeholder.com/400x500" alt="Sufal K.C">
+            <img src="assets/img/hero/hero_1.png" alt="Sufal K.C">
         </div>
     </section>
 
     <section id="about" class="section">
         <h2>About Me</h2>
         <div class="about-grid">
-            <p>I am Sufal K.C., a dedicated Electronics Engineering Student with a passion foe solving problems, creating solutions, and delivering meaningful impact. My journey blends technology, leadership, and community-building.</p>
-            <p>With experience across tech communities, IoT based solutions, and AI/ML-driven projects, I strive to build solutions that empower people while creating opportunities for future growth and innovation.</p>
+            <p>I am Sufal K.C., a dedicated Electronics Engineering Student with a passion for solving problems, finding solutions, and delivering meaningful impact. My journey blends technology, leadership, and community building.</p>
+            <p>With experience across tech communities, IoT based solutions, AI/ML driven projects, and web development project, I strive to build solutions that empower people while creating opportunities for future growth and innovation.</p>
         </div>
 
         <h3>Skills & Expertise</h3>
@@ -124,8 +130,57 @@
         </div>
     </section>
 
-    <section id="community" class="section">
-        <h2>Community Experiences</h2>
+     <section id="projects" class="section">
+    <h2>My Projects</h2>
+    <div class="carousel-wrapper">
+        <!-- Left Arrow Button -->
+        <button class="scroll-btn left-btn" onclick="scrollProjects(-350)">&#9664;</button>
+        
+        <!-- Carousel Container with Unique ID -->
+        <div class="carousel project-carousel" id="projects-scroll">
+            <div class="project-card">
+                <img src="https://via.placeholder.com/200" alt="RF Wave Motion Detection">
+                <div class="project-info">
+                    <h4>RF WAVE CSI BASED ROOM SECURITY MOTION DETECTION SYSTEM</h4>
+                    <p>A wireless sensor network using home wifi for real time motion detection in rooms. Decreased cost, trained in collage environment and multiple node receivers.</p>
+                    <a href="https://github.com/Sufal-kc/RF-WAVE-CSI-BASED-ROOM-SECURITY-MOTION-DETECTION-SYSTEM.git" class="btn-outline small-btn" target="_blank">View Project &rarr;</a>
+                </div>
+            </div>
+            
+            <div class="project-card">
+                <img src="https://via.placeholder.com/200" alt="Offline Communication">
+                <div class="project-info">
+                    <h4>OFFLINE.COM</h4>
+                    <p>Offline communication within organization or Disaster using NRF and Esp32. Allows users within 150m to chat offline, share low storage data below 1MB (Due to Esp32 devkit v1 limitation).</p>
+                    <a href="https://github.com/Sufal-kc/offline.com.git" class="btn-outline small-btn" target="_blank">View Project &rarr;</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <img src="https://via.placeholder.com/200" alt="Bus Route Navigator">
+                <div class="project-info">
+                    <h4>AI POWERED BUS ROUTE NAVIGATOR</h4>
+                    <p>Allows tourist to naviagate to Kathmandu valley with Proper fare. Also has emergency, student discount, disability discount and user interface to add new routes too.</p>
+                    <a href="https://github.com/Sufal-kc/AI-Powered-Bus-Route-Navigator.git" class="btn-outline small-btn" target="_blank">View Project &rarr;</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <img src="https://via.placeholder.com/200" alt="Eye Controlled Wheelchair">
+                <div class="project-info">
+                    <h4>AI POWERED EYE CONTROLLED WHEELCHAIR</h4>
+                    <p>A prototype assistive mobility system that maps eye blink and head pose gestures to vehicle movement commands. Additionally worked on joystick based and emergency features.</p>
+                    <a href="https://github.com/Sufal-kc/AI-Powered-Eye-controlled-Wheelchair.git" class="btn-outline small-btn" target="_blank">View Project &rarr;</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Arrow Button -->
+        <button class="scroll-btn right-btn" onclick="scrollProjects(350)">&#9654;</button>
+    </div>
+</section>
+    <section id="articles" class="section">
+        <h2>Medium Articles</h2>
         <div class="carousel-wrapper">
             <button class="scroll-btn left-btn" onclick="scrollContainer('community-scroll', -300)">&#9664;</button>
             <div class="carousel" id="community-scroll">
@@ -144,22 +199,7 @@
         </div>
     </section>
 
-    <section id="projects" class="section">
-        <h2>My Projects</h2>
-        <div class="carousel-wrapper">
-            <div class="carousel project-carousel">
-                <div class="project-card">
-                    <img src="https://via.placeholder.com/200" alt="Project Image">
-                    <div class="project-info">
-                        <h4>Banking Management System</h4>
-                        <p>C Programming</p>
-                        <a href="#" class="btn-outline small-btn">View Project &rarr;</a>
-                    </div>
-                </div>
-            </div>
-            <button class="scroll-btn right-btn" style="position: relative;">&rarr;</button>
-        </div>
-    </section>
+
 
     <section id="honors" class="section">
         <h2>Honors and Awards</h2>
@@ -197,7 +237,7 @@
                     <p>📍 Kathmandu, Nepal</p>
                 </div>
                 <div class="footer-copy">
-                    <p>&copy; 2026 Sufal K.C.</p>
+                    <p>&copy; <span id="year"></span> Sufal K.C.</p>
                 </div>
             </div>
             <div class="contact-form">
