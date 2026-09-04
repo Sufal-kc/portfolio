@@ -158,93 +158,15 @@
         <!-- Right Arrow Button -->
         <button class="scroll-btn right-btn" onclick="scrollProjects(350)">&#9654;</button>
     </div>
-</section>
-   <section id="articles" class="section">
+<section id="articles" class="section">
     <h2>Medium Articles</h2>
     <div class="carousel-wrapper">
         <!-- Scroll Left Button -->
         <button class="scroll-btn left-btn" onclick="scrollArticles(-320)">&#9664;</button>
         
+        <!-- Articles Dynamic Container -->
         <div class="carousel articles-carousel" id="articles-scroll">
-            
-            <div class="article-card">
-                <a href="https://medium.com/@kcsufal1/cryptographic-armor-how-hashing-salting-and-ciphers-actually-shield-your-data-42b8accd5528?sharedUserId=kcsufal1" target="_blank" class="article-link">
-                    <div class="image-wrapper">
-                        <img src="https://via.placeholder.com/320x180" alt="Cryptographic Armor">
-                        <span class="badge">Medium</span>
-                    </div>
-                    <div class="article-content">
-                        <h4>Cryptographic Armor: How Hashing, Salting, and Ciphers Actually Shield Your Data</h4>
-                        <span class="read-more">Read Article &rarr;</span>
-                    </div>
-                </a>
-            </div>
-
-            <div class="article-card">
-                <a href="https://medium.com/@kcsufal1/the-multi-factor-illusion-ff018ed70953?sharedUserId=kcsufal1" target="_blank" class="article-link">
-                    <div class="image-wrapper">
-                        <img src="https://via.placeholder.com/320x180" alt="The Multi-Factor Illusion">
-                        <span class="badge">Medium</span>
-                    </div>
-                    <div class="article-content">
-                        <h4>The Multi-Factor Illusion</h4>
-                        <span class="read-more">Read Article &rarr;</span>
-                    </div>
-                </a>
-            </div>
-
-            <div class="article-card">
-                <a href="https://medium.com/@kcsufal1/password-small-guide-from-me-for-smart-password-436f8a612883?sharedUserId=kcsufal1" target="_blank" class="article-link">
-                    <div class="image-wrapper">
-                        <img src="https://via.placeholder.com/320x180" alt="Password Guide">
-                        <span class="badge">Medium</span>
-                    </div>
-                    <div class="article-content">
-                        <h4>Password? Small guide from me for smart password :(</h4>
-                        <span class="read-more">Read Article &rarr;</span>
-                    </div>
-                </a>
-            </div>
-
-            <div class="article-card">
-                <a href="https://medium.com/@kcsufal1/model-distillation-b64699d40b70?sharedUserId=kcsufal1" target="_blank" class="article-link">
-                    <div class="image-wrapper">
-                        <img src="https://via.placeholder.com/320x180" alt="Model Distillation">
-                        <span class="badge">Medium</span>
-                    </div>
-                    <div class="article-content">
-                        <h4>Model Distillation</h4>
-                        <span class="read-more">Read Article &rarr;</span>
-                    </div>
-                </a>
-            </div>
-
-            <div class="article-card">
-                <a href="https://medium.com/@kcsufal1/sql-2-90e32e04af18?sharedUserId=kcsufal1" target="_blank" class="article-link">
-                    <div class="image-wrapper">
-                        <img src="https://via.placeholder.com/320x180" alt="Structured Query Language 2">
-                        <span class="badge">Medium</span>
-                    </div>
-                    <div class="article-content">
-                        <h4>Structured Query Language 2</h4>
-                        <span class="read-more">Read Article &rarr;</span>
-                    </div>
-                </a>
-            </div>
-
-            <div class="article-card">
-                <a href="https://medium.com/@kcsufal1/sql-cad1482a05d5?sharedUserId=kcsufal1" target="_blank" class="article-link">
-                    <div class="image-wrapper">
-                        <img src="https://via.placeholder.com/320x180" alt="Structured Query Language">
-                        <span class="badge">Medium</span>
-                    </div>
-                    <div class="article-content">
-                        <h4>Structured Query Language</h4>
-                        <span class="read-more">Read Article &rarr;</span>
-                    </div>
-                </a>
-            </div>
-
+            <p id="articles-loading" style="color: var(--text-muted); padding: 20px;">Loading articles from Medium...</p>
         </div>
 
         <!-- Scroll Right Button -->
