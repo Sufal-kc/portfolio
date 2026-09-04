@@ -103,3 +103,14 @@ function updateButtonText(theme) {
         themeToggleBtn.textContent = '🌙 Dark Mode';
     }
 }
+
+//SMmoth scrolling for article
+function scrollArticles(distance) {
+    const container = document.getElementById('articles-scroll');
+    if (container) {
+        container.scrollBy({
+            left: distance,
+            behavior: 'smooth'
+        });
+    }
+}
