@@ -8,16 +8,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Function to handle horizontal scrolling for custom carousels
-function scrollContainer(containerId, scrollOffset) {
-    const container = document.getElementById(containerId);
-    if(container) {
-        container.scrollBy({
-            left: scrollOffset,
-            behavior: 'smooth'
-        });
-    }
-}
 
 //For dyanamically updating the year in the footer
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -166,17 +156,6 @@ async function fetchMediumArticles() {
     } catch (error) {
         console.error('Error fetching Medium articles:', error);
         container.innerHTML = '<p style="color: var(--text-muted);">Failed to load articles.</p>';
-    }
-}
-
-// Function to handle left/right button scrolling
-function scrollArticles(distance) {
-    const container = document.getElementById('articles-scroll');
-    if (container) {
-        container.scrollBy({
-            left: distance,
-            behavior: 'smooth'
-        });
     }
 }
 
