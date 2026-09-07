@@ -101,11 +101,6 @@ img {
    display: block;
 }
 
-.btn-primary {
-   background: var(--btn-bg);
-   color: var(--btn-text);
-}
-
 /* Typography */
 h1 { font-size: 3.5rem; font-weight: 700; margin-bottom: 10px; }
 h2 { font-size: 2rem; text-align: center; margin-bottom: 40px; font-weight: 600; }
@@ -136,8 +131,8 @@ nav {
 
 /* Buttons */
 .btn-primary {
-   background: #fff;
-   color: #000;
+   background: var(--btn-bg);
+   color: var(--btn-text);
    padding: 12px 24px;
    border-radius: 30px;
    text-decoration: none;
@@ -191,6 +186,16 @@ nav {
    max-width: 400px;
    width: 100%;
    border-radius: 20px;
+}
+
+/* Typewriter effect */
+.typewriter-container {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    height: 2rem;
+    display: flex;
+    align-items: center;
 }
 
 /* About */
@@ -443,10 +448,6 @@ nav {
         gap: 12px;
     }
 
-    .nav-links a {
-        margin-right: 0;
-    }
-
     .nav-right {
         width: 100%;
         justify-content: flex-start;
@@ -498,7 +499,7 @@ nav {
     .timeline-item { width: 100%; padding-left: 70px; padding-right: 25px; }
     .timeline-item.left, .timeline-item.right { left: 0; text-align: left; }
     .timeline-item.left::after, .timeline-item.right::after { left: 26px; }
-    .timeline-item.left .timeline-content { justify-content: flex-start; flex-direction: row-reverse; justify-content: flex-end; }
+    .timeline-item.left .timeline-content { flex-direction: row-reverse; justify-content: flex-end; }
 
     .contact-info, .contact-form {
         padding: 24px 18px;
@@ -541,16 +542,6 @@ nav {
     .contact-details {
         margin-top: 20px;
     }
-}
-
-/*For typewriter effect*/
-.typewriter-container {
-    font-size: 1.5rem;
-    color: var(--text-muted);
-    margin-bottom: 20px;
-    height: 2rem; /* Reserves vertical space so layout doesn't shift */
-    display: flex;
-    align-items: center;
 }
 
 .cursor {
