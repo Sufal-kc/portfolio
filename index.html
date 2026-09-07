@@ -10,20 +10,27 @@
 <body>
 
     <nav>
-        <div class="nav-links">
-            <a href="#home">Home</a>
-            <a href="#about">About</a>
-            <a href="#experiences">Experiences</a>
-            <a href="#projects">Projects</a>
-            <a href="#articles">Articles</a>
-            <a href="#honors">Honors</a>
+        <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="nav-menu">
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#experiences">Experiences</a>
+                <a href="#projects">Projects</a>
+                <a href="#articles">Articles</a>
+                <a href="#honors">Honors</a>
+            </div>
+
+            <div class="nav-right">
+                <button id="theme-toggle" class="btn-outline">☀️ Light Mode</button>
+                <a href="#contact" class="btn-outline">Keep in Touch</a>
+            </div>
         </div>
-    
-        <div class="nav-right">
-            <!-- <button id="theme-toggle" class="theme-toggle-btn">☀️ Light Mode</button> -->
-            <button id="theme-toggle" class="btn-outline">☀️ Light Mode</button>
-            <a href="#contact" class="btn-outline">Keep in Touch</a>
-        </div>    
     </nav>
 
     <section id="home" class="hero">
