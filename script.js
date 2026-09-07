@@ -12,6 +12,23 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 //For dyanamically updating the year in the footer
 document.getElementById('year').textContent = new Date().getFullYear();
 
+const menuToggle = document.querySelector('.menu-toggle');
+const navMenu = document.querySelector('.nav-menu');
+
+if (menuToggle && navMenu) {
+    menuToggle.addEventListener('click', () => {
+        const isOpen = navMenu.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    navMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navMenu.classList.remove('open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+}
+
 // Typewriter effect for the Top section
 const titles = ["Electronics Engineer", "Vice President-SEIS", "AI Enthusiast"];
 let titleIndex = 0;
@@ -65,32 +82,34 @@ function scrollProjects(distance) {
 //for theme toggle
 const themeToggleBtn = document.getElementById('theme-toggle');
 
-// Check saved theme from localStorage, default to dark
-const currentTheme = localStorage.getItem('theme') || 'dark';
-document.documentElement.setAttribute('data-theme', currentTheme);
-updateButtonText(currentTheme);
+if (themeToggleBtn) {
+    // Check saved theme from localStorage, default to dark
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    updateButtonText(currentTheme);
 
-themeToggleBtn.addEventListener('click', () => {
-    let theme = document.documentElement.getAttribute('data-theme');
-    
-    // Toggle theme
-    if (theme === 'dark') {
-        theme = 'light';
-    } else {
-        theme = 'dark';
-    }
-    
-    // Apply theme and save preference
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-    updateButtonText(theme);
-});
+    themeToggleBtn.addEventListener('click', () => {
+        let theme = document.documentElement.getAttribute('data-theme');
+        
+        // Toggle theme
+        if (theme === 'dark') {
+            theme = 'light';
+        } else {
+            theme = 'dark';
+        }
+        
+        // Apply theme and save preference
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        updateButtonText(theme);
+    });
 
-function updateButtonText(theme) {
-    if (theme === 'dark') {
-        themeToggleBtn.textContent = '☀️ Light Mode';
-    } else {
-        themeToggleBtn.textContent = '🌙 Dark Mode';
+    function updateButtonText(theme) {
+        if (theme === 'dark') {
+            themeToggleBtn.textContent = '☀️ Light Mode';
+        } else {
+            themeToggleBtn.textContent = '🌙 Dark Mode';
+        }
     }
 }
 
