@@ -180,3 +180,42 @@ async function fetchMediumArticles() {
 
 // Load articles on DOM Ready
 document.addEventListener('DOMContentLoaded', fetchMediumArticles);
+
+//for sending message to me using web3form
+const contactForm = document.getElementById('contact-form');
+const formStatus = document.getElementById('form-status');
+const submitBtn = document.getElementById('btn-submit');
+
+contactForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+    formStatus.textContent = '';
+
+    const formData = new FormData(contactForm);
+
+    try {
+        const response = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            formStatus.style.color = '#4CAF50';
+            formStatus.textContent = 'Message sent successfully!';
+            contactForm.reset();
+        } else {
+            formStatus.style.color = '#f44336';
+            formStatus.textContent = 'Failed to send message. Please try again.';
+        }
+    } catch (error) {
+        formStatus.style.color = '#f44336';
+        formStatus.textContent = 'Network error. Please try again later.';
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
+    }
+});

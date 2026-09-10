@@ -654,8 +654,10 @@ nav {
     color: var(--text-main);
     margin-bottom: 15px;
     display: -webkit-box;
+    line-clamp: 3;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+    max-height: calc(1.4em * 3);
     overflow: hidden;
 }
 
