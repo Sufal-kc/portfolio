@@ -185,7 +185,8 @@ async function fetchMediumArticles() {
     const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssFeedUrl)}`;
     
     // High-quality fallback image for articles without media
-    const fallbackImage = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop';
+    // const fallbackImage = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop';
+    const fallbackImage = "./assets/img/medium/default_medium.png"
 
     const container = document.getElementById('articles-scroll');
 
