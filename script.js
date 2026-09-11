@@ -124,11 +124,68 @@ function scrollArticles(distance) {
     }
 }
 
+// // Function to fetch Medium RSS feed and build cards dynamically
+// async function fetchMediumArticles() {
+//     const mediumUsername = 'kcsufal1';
+//     const rssFeedUrl = `https://medium.com/feed/@${mediumUsername}`;
+//     const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssFeedUrl)}`;
+
+//     const container = document.getElementById('articles-scroll');
+
+//     try {
+//         const response = await fetch(apiUrl);
+//         const data = await response.json();
+
+//         if (data.status === 'ok' && data.items.length > 0) {
+//             container.innerHTML = ''; // Clear loading text
+
+//             data.items.forEach(article => {
+//                 // Extract image thumbnail from article HTML content
+//                 let imgUrl = article.thumbnail;
+                
+//                 if (!imgUrl) {
+//                     const parser = new DOMParser();
+//                     const htmlDoc = parser.parseFromString(article.content, 'text/html');
+//                     const imgElement = htmlDoc.querySelector('img');
+//                     imgUrl = imgElement ? imgElement.src : 'https://via.placeholder.com/320x180?text=Medium+Article';
+//                 }
+
+//                 // Create Card HTML
+//                 const card = document.createElement('div');
+//                 card.className = 'article-card';
+
+//                 card.innerHTML = `
+//                     <a href="${article.link}" target="_blank" class="article-link">
+//                         <div class="image-wrapper">
+//                             <img src="${imgUrl}" alt="${article.title}">
+//                             <span class="badge">Medium</span>
+//                         </div>
+//                         <div class="article-content">
+//                             <h4>${article.title}</h4>
+//                             <span class="read-more">Read Article &rarr;</span>
+//                         </div>
+//                     </a>
+//                 `;
+
+//                 container.appendChild(card);
+//             });
+//         } else {
+//             container.innerHTML = '<p style="color: var(--text-muted);">No articles found.</p>';
+//         }
+//     } catch (error) {
+//         console.error('Error fetching Medium articles:', error);
+//         container.innerHTML = '<p style="color: var(--text-muted);">Failed to load articles.</p>';
+//     }
+// }
+
 // Function to fetch Medium RSS feed and build cards dynamically
 async function fetchMediumArticles() {
     const mediumUsername = 'kcsufal1';
     const rssFeedUrl = `https://medium.com/feed/@${mediumUsername}`;
     const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssFeedUrl)}`;
+    
+    // High-quality fallback image for articles without media
+    const fallbackImage = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop';
 
     const container = document.getElementById('articles-scroll');
 
@@ -140,14 +197,14 @@ async function fetchMediumArticles() {
             container.innerHTML = ''; // Clear loading text
 
             data.items.forEach(article => {
-                // Extract image thumbnail from article HTML content
+                // Extract image thumbnail from payload or article HTML content
                 let imgUrl = article.thumbnail;
                 
                 if (!imgUrl) {
                     const parser = new DOMParser();
                     const htmlDoc = parser.parseFromString(article.content, 'text/html');
                     const imgElement = htmlDoc.querySelector('img');
-                    imgUrl = imgElement ? imgElement.src : 'https://via.placeholder.com/320x180?text=Medium+Article';
+                    imgUrl = imgElement ? imgElement.src : fallbackImage;
                 }
 
                 // Create Card HTML
@@ -155,9 +212,11 @@ async function fetchMediumArticles() {
                 card.className = 'article-card';
 
                 card.innerHTML = `
-                    <a href="${article.link}" target="_blank" class="article-link">
+                    <a href="${article.link}" target="_blank" rel="noopener" class="article-link">
                         <div class="image-wrapper">
-                            <img src="${imgUrl}" alt="${article.title}">
+                            <img src="${imgUrl}" 
+                                 alt="Article cover" 
+                                 onerror="this.onerror=null; this.src='${fallbackImage}';">
                             <span class="badge">Medium</span>
                         </div>
                         <div class="article-content">
