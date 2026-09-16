@@ -279,3 +279,46 @@ contactForm.addEventListener('submit', async function (e) {
         submitBtn.textContent = 'Submit';
     }
 });
+// Honor Cards Image Popup Logic
+const modal = document.getElementById('image-modal');
+const modalImg = document.getElementById('modal-img');
+const modalCaption = document.getElementById('modal-caption');
+const modalClose = document.querySelector('.modal-close');
+
+document.querySelectorAll('.honor-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const img = card.querySelector('img');
+        const title = card.querySelector('h4')?.textContent || '';
+
+        if (img) {
+            modalImg.src = img.src;
+            modalImg.alt = img.alt || title;
+            modalCaption.textContent = title;
+            modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
+        }
+    });
+});
+
+function closeModal() {
+    if (modal) {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+    }
+}
+
+if (modalClose) modalClose.addEventListener('click', closeModal);
+
+// Close modal when clicking on the dark backdrop
+if (modal) {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+}
+
+// Close modal when pressing Esc
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
