@@ -809,3 +809,44 @@ nav {
     color: var(--text-main);
     text-align: center;
 }
+/* Remove default list bullets and padding */
+.social-links {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.social-links li {
+    list-style: none !important;
+    margin: 0;
+    padding: 0;
+}
+
+/* Align links & remove underline */
+.social-links a,
+.location-detail {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-muted, #a1a1aa);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--text-main, #ffffff);
+}
+
+/* STRICT SVG SIZING (Fixes giant icons) */
+.social-icon {
+    width: 20px !important;
+    height: 20px !important;
+    max-width: 20px !important;
+    max-height: 20px !important;
+    flex-shrink: 0;
+    fill: currentColor;
+}
