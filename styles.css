@@ -850,3 +850,16 @@ nav {
     flex-shrink: 0;
     fill: currentColor;
 }
+
+.carousel {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+.carousel::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
