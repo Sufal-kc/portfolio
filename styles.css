@@ -863,3 +863,40 @@ nav {
 .carousel::-webkit-scrollbar {
     display: none; /* Chrome/Safari */
 }
+
+/* over animation for skills section */
+/* Base skill tag styling - ensures smooth animation transition */
+.skill-card,
+.skill-tag,
+.skills-container span,
+.skills-list li {
+    display: inline-block;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.25s ease,
+                box-shadow 0.25s ease,
+                background-color 0.25s ease;
+    cursor: pointer;
+    will-change: transform;
+}
+
+/* On-hover effect */
+/* On-hover effect for skills (Greyish-White Theme) */
+.skill-card:hover,
+.skill-tag:hover,
+.skills-container span:hover,
+.skills-list li:hover {
+    /* Lift and scale */
+    transform: translateY(-3px) scale(1.04);
+
+    /* Greyish-white background fill */
+    background-color: #e2e8f0;
+
+    /* Matching border tone */
+    border-color: #cbd5e1;
+
+    /* Text contrast adjustment */
+    color: #0f172a;
+
+    /* Soft greyish-white matching shadow */
+    box-shadow: 0 6px 16px rgba(226, 232, 240, 0.35);
+}
