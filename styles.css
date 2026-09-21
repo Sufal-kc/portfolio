@@ -900,3 +900,12 @@ nav {
     /* Soft greyish-white matching shadow */
     box-shadow: 0 6px 16px rgba(226, 232, 240, 0.35);
 }
+[data-theme="dark"] .skill-card:hover,
+[data-theme="dark"] .skill-tag:hover,
+[data-theme="dark"] .skills-container span:hover,
+[data-theme="dark"] .skills-list li:hover {
+    background-color: #f1f5f9;
+    border-color: #ffffff;
+    color: #0f172a;
+    box-shadow: 0 6px 16px rgba(241, 245, 249, 0.2);
+}
