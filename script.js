@@ -317,6 +317,28 @@ document.addEventListener('keydown', (e) => {
         closeModal();
     }
 });
+
+// ==========================================
+// 5. THEME TOGGLE (SWITCH HANDLER)
+// ==========================================
+const themeToggle = document.getElementById('theme-toggle');
+
+if (themeToggle) {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    
+    // Set initial theme attribute
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    
+    // Set checkbox state (checked = light mode)
+    themeToggle.checked = (savedTheme === 'light');
+
+    themeToggle.addEventListener('change', () => {
+        const newTheme = themeToggle.checked ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
+}
 // // Smooth Scrolling for navigation links
 // document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 //     anchor.addEventListener('click', function (e) {
