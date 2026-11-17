@@ -226,7 +226,7 @@ function buildArticleCard(article) {
     img.loading = 'lazy';
     img.width = 300;
     img.height = 160;
-    img.addEventListener('error', () => { img.src = MEDIUM_FALLBACK_IMAGE; }, { once: true });
+    // (Load errors are handled by a delegated listener below so carousel clones are covered too.)
 
     const badge = document.createElement('span');
     badge.className = 'badge';
@@ -249,6 +249,15 @@ function buildArticleCard(article) {
     card.append(link);
     return card;
 }
+
+// Delegated (capture-phase) image error handler: cloneNode() doesn't copy
+// event listeners, so per-image handlers would miss the carousel clones.
+document.addEventListener('error', (e) => {
+    const img = e.target;
+    if (img instanceof HTMLImageElement && img.closest('.article-card') && !img.src.endsWith(MEDIUM_FALLBACK_IMAGE.slice(1))) {
+        img.src = MEDIUM_FALLBACK_IMAGE;
+    }
+}, true);
 
 function renderArticles(container, articles) {
     container.replaceChildren(...articles.map(buildArticleCard));
@@ -276,7 +285,10 @@ async function fetchMediumArticles() {
             let image = item.thumbnail;
             if (!image && item.content) {
                 const htmlDoc = new DOMParser().parseFromString(item.content, 'text/html');
-                image = htmlDoc.querySelector('img')?.getAttribute('src') || '';
+                // Skip Medium's 1x1 tracking pixel (medium.com/_/stat?...), which browsers block.
+                const realImg = [...htmlDoc.querySelectorAll('img')]
+                    .find(el => !(el.getAttribute('src') || '').includes('/_/stat'));
+                image = realImg?.getAttribute('src') || '';
             }
             return { title: item.title, link: item.link, image };
         });

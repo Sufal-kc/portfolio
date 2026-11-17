@@ -598,6 +598,8 @@ nav {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
+    /* Become visible instantly on open so the close button can receive focus */
+    transition: opacity 0.3s ease, visibility 0s;
 }
 
 .modal-content {
