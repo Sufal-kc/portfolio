@@ -1,30 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sufal K.C.</title>
-    <link rel="stylesheet" href="./styles.css">
+    <title>Sufal K.C. | Electronics Engineer &amp; Developer</title>
+    <meta name="description" content="Portfolio of Sufal K.C., an Electronics Engineering student and Vice President of SEIS from Kathmandu, Nepal, building IoT, AI/ML and web projects.">
+    <link rel="canonical" href="https://www.kcsufal.com.np/">
+
+    <!-- Open Graph / social previews -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.kcsufal.com.np/">
+    <meta property="og:title" content="Sufal K.C. | Electronics Engineer &amp; Developer">
+    <meta property="og:description" content="IoT, AI/ML and web projects by Sufal K.C., Electronics Engineering student from Kathmandu, Nepal.">
+    <meta property="og:image" content="https://www.kcsufal.com.np/assets/img/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <!-- Apply saved theme before first paint to avoid a flash of the wrong theme -->
+    <script>
+        document.documentElement.classList.add('js'); // enables the preloader (never shown if JS is off)
+        try { document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark'); } catch (e) {}
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
 </head>
-<!-- Image Modal -->
-<div id="image-modal" class="modal-overlay" aria-hidden="true">
-    <div class="modal-content">
-        <button class="modal-close" aria-label="Close modal">&times;</button>
-        <img id="modal-img" src="" alt="Enlarged Honor Photo">
-        <p id="modal-caption"></p>
-    </div>
-</div>
 <body>
 
+    <!-- Page loader (only shown when JS runs; hidden after load + a short minimum delay) -->
+    <div id="preloader" class="preloader" role="status" aria-live="polite">
+        <div class="loader-ring" aria-hidden="true"><span>SK</span></div>
+        <p class="loader-text">Loading<span class="loader-dots" aria-hidden="true"></span></p>
+    </div>
+
     <nav>
-        <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="nav-menu">
             <span></span>
             <span></span>
             <span></span>
         </button>
 
-        <div class="nav-menu">
+        <div class="nav-menu" id="nav-menu">
             <div class="nav-links">
                 <a href="#home">Home</a>
                 <a href="#about">About</a>
@@ -35,245 +56,242 @@
             </div>
 
             <div class="nav-right">
-                <!-- <button id="theme-toggle" class="btn-outline">☀️ Light Mode</button> -->
-                    <label class="theme-switch" for="theme-toggle" aria-label="Toggle Theme">
-                    <input type="checkbox" id="theme-toggle">
-                    <span class="switch-slider">
-                        <span class="switch-icon moon">🌙</span>
-                        <span class="switch-icon sun">☀️</span>
+                <a href="#contact" class="btn-outline nav-cta">Keep in Touch</a>
+                <label class="theme-switch" for="theme-toggle" title="Toggle light / dark theme">
+                    <input type="checkbox" id="theme-toggle" role="switch" aria-label="Light theme">
+                    <span class="switch-track" aria-hidden="true">
+                        <span class="switch-stars"></span>
+                        <span class="switch-thumb">
+                            <svg class="icon-moon" viewBox="0 0 24 24"><path fill="currentColor" d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+                            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2" fill="currentColor" stroke="none"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+                        </span>
                     </span>
                 </label>
-                <a href="#contact" class="btn-outline">Keep in Touch</a>
             </div>
         </div>
     </nav>
 
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Sufal K.C</h1>
-            <div class="typewriter-container">
-                <span id="typed-text"></span><span class="cursor">|</span>
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>Sufal K.C</h1>
+                <p class="sr-only">Electronics Engineer, Vice President of SEIS, AI Enthusiast</p>
+                <div class="typewriter-container" aria-hidden="true">
+                    <span id="typed-text"></span><span class="cursor">|</span>
+                </div>
+                <a href="/assets/resume/Sufal.pdf" class="btn-primary" target="_blank" rel="noopener">Resume &rarr;</a>
             </div>
-            <a href="/assets/resume/Sufal.pdf" class="btn-primary">Resume &rarr;</a>
-        </div>
-        <div class="hero-image">
-            <img src="assets/img/hero/hero_1.png" alt="Sufal K.C">
-        </div>
-    </section>
+            <div class="hero-image">
+                <img src="assets/img/hero/hero.webp" alt="Portrait of Sufal K.C." width="607" height="769" fetchpriority="high">
+            </div>
+        </section>
 
-    <section id="about" class="section">
-        <h2>About Me</h2>
-        <div class="about-grid">
-            <p>I am Sufal K.C., a dedicated Electronics Engineering Student with a passion for solving problems, finding solutions, and delivering meaningful impact. My journey blends technology, leadership, and community building.</p>
-            <p>With experience across tech communities, IoT based solutions, AI/ML driven projects, and web development project, I strive to build solutions that empower people while creating opportunities for future growth and innovation.</p>
-        </div>
+        <section id="about" class="section">
+            <h2>About Me</h2>
+            <div class="about-grid">
+                <p>I'm Sufal K.C., an Electronics Engineering student from Kathmandu who enjoys turning real problems into working hardware and software. I currently serve as Vice President of SEIS, and I've been Runner Up at the KathFest 3.0 Hackathon and won the Best Thematic Award at the Taranga Hardware Hackathon.</p>
+                <p>My work spans IoT systems built on ESP32 and Wi-Fi sensing, AI/ML projects like an eye-controlled wheelchair, and full-stack web apps. I care about building technology that is affordable, accessible and genuinely useful, and about growing the tech communities around me.</p>
+            </div>
 
-        
-<h3>Skills & Expertise</h3>
-        <div class="skills-container">
+            <h3>Skills &amp; Expertise</h3>
+            <ul class="skills-container">
+                <!-- Programming Languages -->
+                <li class="skill-tag">Python</li>
+                <li class="skill-tag">JavaScript</li>
+                <li class="skill-tag">SQL</li>
+                <li class="skill-tag">C</li>
+                <li class="skill-tag">Java</li>
 
-            <!-- Programming Languages -->
-            <span class="skill-tag">Python</span>
-            <span class="skill-tag">JavaScript</span>
-            <span class="skill-tag">SQL</span>
-            <span class="skill-tag">C</span>
-            <span class="skill-tag">Java</span>
+                <!-- AI / ML & Data -->
+                <li class="skill-tag">Pandas</li>
+                <li class="skill-tag">NumPy</li>
+                <li class="skill-tag">Matplotlib</li>
+                <li class="skill-tag">Requests</li>
+                <li class="skill-tag">Data Analysis</li>
+                <li class="skill-tag">Machine Learning</li>
 
-            <!-- AI / ML & Data -->
-            <span class="skill-tag">Pandas</span>
-            <span class="skill-tag">NumPy</span>
-            <span class="skill-tag">Matplotlib</span>
-            <span class="skill-tag">Requests</span>
-            <span class="skill-tag">Data Analysis</span>
-            <span class="skill-tag">Machine Learning</span>
+                <!-- Web Development -->
+                <li class="skill-tag">HTML</li>
+                <li class="skill-tag">CSS</li>
+                <li class="skill-tag">Node.js</li>
 
-            <!-- Web Development -->
-            <span class="skill-tag">HTML</span>
-            <span class="skill-tag">CSS</span>
-            <span class="skill-tag">JavaScript</span>
-            <span class="skill-tag">Node.js</span>
+                <!-- Engineering & Concepts -->
+                <li class="skill-tag">IoT</li>
+                <li class="skill-tag">Digital Signal Processing</li>
+                <li class="skill-tag">Object-Oriented Programming</li>
 
-            <!-- Engineering & Concepts -->
-            <span class="skill-tag">IoT</span>
-            <span class="skill-tag">Digital Signal Processing</span>
-            <span class="skill-tag">Object-Oriented Programming</span>
+                <!-- Soft Skills -->
+                <li class="skill-tag">Problem Solving</li>
+                <li class="skill-tag">Team Leadership</li>
+                <li class="skill-tag">Communication</li>
+                <li class="skill-tag">Event Coordination</li>
+            </ul>
+        </section>
 
-            <!-- Soft Skills -->
-            <span class="skill-tag">Problem Solving</span>
-            <span class="skill-tag">Team Leadership</span>
-            <span class="skill-tag">Communication</span>
-            <span class="skill-tag">Event Coordination</span>
-
-        </div>
-
-        <!-- <div class="skills-container">
-            <span class="skill-tag">Agile Methodologies</span>
-            <span class="skill-tag">Risk Mitigation</span>
-            <span class="skill-tag">Team Leadership</span>
-            <span class="skill-tag">Communication Skills</span>
-            <span class="skill-tag">Python</span>
-            <span class="skill-tag">Data Analysis</span>
-            <span class="skill-tag">Machine Learning</span>
-            <span class="skill-tag">IoT Development</span>
-            <span class="skill-tag">Community Building</span>
-            <span class="skill-tag">Moderator</span>
-            <span class="skill-tag">Event Coordination</span>
-        </div> -->
-    </section>
-
-    <section id="experiences" class="section">
-        <h2>Work Experiences</h2>
-        <div class="timeline">
-            <div class="timeline-item left">
-                <div class="timeline-content">
-                    <img src="assets/img/company/seis.png" alt="Logo" class="company-logo">
-                    <div>
-                        <h4>Vice President</h4>
-                        <p>SEIS</p>
-                        <span>January 2024 - Present</span>
+        <section id="experiences" class="section">
+            <h2>Work Experiences</h2>
+            <div class="timeline">
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <img src="assets/img/company/seis.webp" alt="SEIS logo" class="company-logo" width="40" height="40" loading="lazy">
+                        <div>
+                            <h4>Vice President</h4>
+                            <p>SEIS</p>
+                            <span>Jan 2024 - Present</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <img src="assets/img/company/unesco.webp" alt="UNESCO MGIEP logo" class="company-logo" width="40" height="40" loading="lazy">
+                        <div>
+                            <h4>Support the Research Study on Peace as an Outreach Online Volunteer</h4>
+                            <p>UNESCO Mahatma Gandhi Institute of Education</p>
+                            <span>Oct 2025 - Dec 2025</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item left">
+                    <div class="timeline-content">
+                        <img src="assets/img/company/origami.webp" alt="Origami for Good Nepal logo" class="company-logo" width="40" height="40" loading="lazy">
+                        <div>
+                            <h4>Graphics Design Internship/ Fellowship</h4>
+                            <p>Origami for Good Nepal</p>
+                            <span>Sep 2025 - Nov 2025</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item right">
+                    <div class="timeline-content">
+                        <img src="assets/img/company/sunway.webp" alt="Sunway Student Representation Council logo" class="company-logo" width="40" height="40" loading="lazy">
+                        <div>
+                            <h4>Data Science Fellow</h4>
+                            <p>Sunway Student Representation Council</p>
+                            <span>Feb 2025 - Jun 2025</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="timeline-item right">
-                <div class="timeline-content">
-                    <img src="assets/img/company/unesco.png" alt="Logo" class="company-logo">
-                    <div>
-                        <h4>Support the Research Study on Peace as an Outreach Online Volunteer</h4>
-                        <p>UNESCO Mahatma Gandhi Institute of Education</p>
-                        <span>Oct 2025 - Dec 2025</span>
-                    </div>
+        </section>
+
+        <section id="projects" class="section">
+            <h2>My Projects</h2>
+            <div class="carousel-wrapper">
+                <button class="scroll-btn left-btn" data-carousel="projects-scroll" data-dir="-1" aria-label="Previous projects">&#9664;</button>
+
+                <div class="carousel project-carousel" id="projects-scroll">
+                    <article class="project-card">
+                        <img src="assets/img/projects/rf-csi.svg" alt="RF Wave CSI motion detection project" width="250" height="163" loading="lazy">
+                        <div class="project-info">
+                            <h4><button type="button" class="card-open" aria-haspopup="dialog">RF WAVE CSI BASED ROOM SECURITY MOTION DETECTION SYSTEM</button></h4>
+                            <p>A wireless sensor network using home Wi-Fi for real-time motion detection in rooms. Low cost, trained in a college environment with multiple receiver nodes.</p>
+                            <ul class="tech-tags" aria-label="Technologies">
+                                <li>Python</li><li>Wi-Fi CSI</li><li>Machine Learning</li>
+                            </ul>
+                            <a href="https://github.com/Sufal-kc/RF-WAVE-CSI-BASED-ROOM-SECURITY-MOTION-DETECTION-SYSTEM" class="btn-outline small-btn" target="_blank" rel="noopener">View Project &rarr;</a>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <img src="assets/img/projects/offline-com.svg" alt="OFFLINE.COM project" width="250" height="163" loading="lazy">
+                        <div class="project-info">
+                            <h4><button type="button" class="card-open" aria-haspopup="dialog">OFFLINE.COM</button></h4>
+                            <p>Offline communication within an organization or during disasters using NRF and ESP32. Lets users within 150m chat offline and share small files under 1MB (an ESP32 DevKit v1 limitation).</p>
+                            <ul class="tech-tags" aria-label="Technologies">
+                                <li>ESP32</li><li>NRF</li><li>C++</li><li>JavaScript</li>
+                            </ul>
+                            <a href="https://github.com/Sufal-kc/offline.com" class="btn-outline small-btn" target="_blank" rel="noopener">View Project &rarr;</a>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <img src="assets/img/projects/bus-navigator.svg" alt="AI powered bus route navigator project" width="250" height="163" loading="lazy">
+                        <div class="project-info">
+                            <h4><button type="button" class="card-open" aria-haspopup="dialog">AI POWERED BUS ROUTE NAVIGATOR</button></h4>
+                            <p>Helps tourists navigate the Kathmandu valley with the correct fare. Includes emergency info, student and disability discounts, and an interface to add new routes.</p>
+                            <ul class="tech-tags" aria-label="Technologies">
+                                <li>TypeScript</li><li>Web App</li><li>AI</li>
+                            </ul>
+                            <a href="https://github.com/Sufal-kc/AI-Powered-Bus-Route-Navigator" class="btn-outline small-btn" target="_blank" rel="noopener">View Project &rarr;</a>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <img src="assets/img/projects/wheelchair.svg" alt="AI powered eye controlled wheelchair project" width="250" height="163" loading="lazy">
+                        <div class="project-info">
+                            <h4><button type="button" class="card-open" aria-haspopup="dialog">AI POWERED EYE CONTROLLED WHEELCHAIR</button></h4>
+                            <p>A prototype assistive mobility system that maps eye blink and head pose gestures to movement commands, with additional joystick control and emergency features.</p>
+                            <ul class="tech-tags" aria-label="Technologies">
+                                <li>Python</li><li>Computer Vision</li><li>Assistive Tech</li>
+                            </ul>
+                            <a href="https://github.com/Sufal-kc/AI-Powered-Eye-controlled-Wheelchair" class="btn-outline small-btn" target="_blank" rel="noopener">View Project &rarr;</a>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <img src="assets/img/projects/qr-attendance.svg" alt="QR code attendance system project" width="250" height="163" loading="lazy">
+                        <div class="project-info">
+                            <h4><button type="button" class="card-open" aria-haspopup="dialog">QR CODE ATTENDANCE SYSTEM</button></h4>
+                            <p>A web app with admin (teacher) and user (student) portals for taking attendance via QR code, with RESTful APIs for authentication and secure data retrieval.</p>
+                            <ul class="tech-tags" aria-label="Technologies">
+                                <li>Java</li><li>MySQL</li><li>REST API</li><li>Docker</li>
+                            </ul>
+                            <a href="https://github.com/Sufal-kc/QR-code-attendance-" class="btn-outline small-btn" target="_blank" rel="noopener">View Project &rarr;</a>
+                        </div>
+                    </article>
+                </div>
+
+                <button class="scroll-btn right-btn" data-carousel="projects-scroll" data-dir="1" aria-label="Next projects">&#9654;</button>
+            </div>
+        </section>
+
+        <section id="articles" class="section">
+            <h2>Medium Articles</h2>
+            <div class="carousel-wrapper">
+                <button class="scroll-btn left-btn" data-carousel="articles-scroll" data-dir="-1" aria-label="Previous articles">&#9664;</button>
+
+                <div class="carousel articles-carousel" id="articles-scroll" aria-busy="true">
+                    <!-- Skeleton placeholders, replaced once articles load -->
+                    <span class="sr-only">Loading articles from Medium…</span>
+                    <div class="article-card skeleton" aria-hidden="true"><div class="sk-block sk-img"></div><div class="sk-block sk-line"></div><div class="sk-block sk-line short"></div></div>
+                    <div class="article-card skeleton" aria-hidden="true"><div class="sk-block sk-img"></div><div class="sk-block sk-line"></div><div class="sk-block sk-line short"></div></div>
+                    <div class="article-card skeleton" aria-hidden="true"><div class="sk-block sk-img"></div><div class="sk-block sk-line"></div><div class="sk-block sk-line short"></div></div>
+                </div>
+
+                <button class="scroll-btn right-btn" data-carousel="articles-scroll" data-dir="1" aria-label="Next articles">&#9654;</button>
+            </div>
+        </section>
+
+        <section id="honors" class="section">
+            <h2>Honors and Awards</h2>
+            <div class="honors-grid">
+                <!-- data-description is shown in the popup when a card is clicked: edit freely -->
+                <div class="honor-card" role="button" tabindex="0" aria-haspopup="dialog"
+                     data-description="Secured the Runner Up position at KathFest 3.0, a hackathon where teams design, build and pitch a working tech solution within a limited time.">
+                    <img src="assets/img/honor/kathfest.webp" alt="KathFest 3.0 Hackathon, Runner Up" class="circle-img" width="120" height="120" loading="lazy">
+                    <h4>Runner Up</h4>
+                    <p>KathFest 3.0 Hackathon</p>
+                    <span class="card-hint" aria-hidden="true">View details →</span>
+                </div>
+                <div class="honor-card" role="button" tabindex="0" aria-haspopup="dialog"
+                     data-description="Won the Best Thematic Award at the Taranga Hardware Hackathon for the hardware project that best addressed the event's theme.">
+                    <img src="assets/img/honor/taranga.webp" alt="Taranga Hardware Hackathon, Best Thematic Award" class="circle-img" width="120" height="120" loading="lazy">
+                    <h4>Best Thematic Award</h4>
+                    <p>Taranga Hardware Hackathon</p>
+                    <span class="card-hint" aria-hidden="true">View details →</span>
+                </div>
+                <div class="honor-card" role="button" tabindex="0" aria-haspopup="dialog"
+                     data-description="Recognized among the top 60 learners of Leapfrog's #60DaysOfLearning2026 challenge for consistently learning and documenting progress every day.">
+                    <img src="assets/img/honor/lsp.webp" alt="Leapfrog #60DaysOfLearning2026, Top 60 Learner" class="circle-img" width="120" height="120" loading="lazy">
+                    <h4>Top 60 Learner!</h4>
+                    <p>Leapfrog #60DaysOfLearning2026 challenge!</p>
+                    <span class="card-hint" aria-hidden="true">View details →</span>
                 </div>
             </div>
-            <div class="timeline-item left">
-                <div class="timeline-content">
-                    <img src="assets/img/company/sunway.png" alt="Logo" class="company-logo">
-                    <div>
-                        <h4>Data Science Fellow</h4>
-                        <p>Sunway Student Representation Council</p>
-                        <span>Feb 2025 - June 2025</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="timeline-item right">
-                <div class="timeline-content">
-                    <img src="assets/img/company/origami.png" alt="Logo" class="company-logo">
-                    <div>
-                        <h4>Graphics Design Internship/ Fellowship</h4>
-                        <p>Origami for Good Nepal</p>
-                        <span>Sep 2025 - Nov 2025</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="projects" class="section">
-    <h2>My Projects</h2>
-    <div class="carousel-wrapper">
-        <!-- Left Arrow Button -->
-        <button class="scroll-btn left-btn" onclick="scrollProjects(-350)">&#9664;</button>
-        
-        <!-- Carousel Container with Unique ID -->
-        <div class="carousel project-carousel" id="projects-scroll">
-            <div class="project-card">
-                <img src="https://via.placeholder.com/200" alt="RF Wave Motion Detection">
-                <div class="project-info">
-                    <h4>RF WAVE CSI BASED ROOM SECURITY MOTION DETECTION SYSTEM</h4>
-                    <p>A wireless sensor network using home wifi for real time motion detection in rooms. Decreased cost, trained in college environment and multiple node receivers.</p>
-                    <a href="https://github.com/Sufal-kc/RF-WAVE-CSI-BASED-ROOM-SECURITY-MOTION-DETECTION-SYSTEM.git" class="btn-outline small-btn" target="_blank">View Project &rarr;</a>
-                </div>
-            </div>
-            
-            <div class="project-card">
-                <img src="https://via.placeholder.com/200" alt="Offline Communication">
-                <div class="project-info">
-                    <h4>OFFLINE.COM</h4>
-                    <p>Offline communication within organization or Disaster using NRF and Esp32. Allows users within 150m to chat offline, share low storage data below 1MB (Due to Esp32 devkit v1 limitation).</p>
-                    <a href="https://github.com/Sufal-kc/offline.com.git" class="btn-outline small-btn" target="_blank">View Project &rarr;</a>
-                </div>
-            </div>
-
-            <div class="project-card">
-                <img src="https://via.placeholder.com/200" alt="Bus Route Navigator">
-                <div class="project-info">
-                    <h4>AI POWERED BUS ROUTE NAVIGATOR</h4>
-                    <p>Allows tourist to naviagate to Kathmandu valley with Proper fare. Also has emergency, student discount, disability discount and user interface to add new routes too.</p>
-                    <a href="https://github.com/Sufal-kc/AI-Powered-Bus-Route-Navigator.git" class="btn-outline small-btn" target="_blank">View Project &rarr;</a>
-                </div>
-            </div>
-
-            <div class="project-card">
-                <img src="https://via.placeholder.com/200" alt="Eye Controlled Wheelchair">
-                <div class="project-info">
-                    <h4>AI POWERED EYE CONTROLLED WHEELCHAIR</h4>
-                    <p>A prototype assistive mobility system that maps eye blink and head pose gestures to vehicle movement commands. Additionally worked on joystick based and emergency features.</p>
-                    <a href="https://github.com/Sufal-kc/AI-Powered-Eye-controlled-Wheelchair.git" class="btn-outline small-btn" target="_blank">View Project &rarr;</a>
-                </div>
-            </div>
-
-            <div class="project-card">
-                <img src="https://via.placeholder.com/200" alt="Eye Controlled Wheelchair">
-                <div class="project-info">
-                    <h4>QR code attendance system</h4>
-                    <p>A Web app containing admin(Teacher) and user(Student) for attendance using QR Code built as project of Java and mysql database.
-                        Implemented RESTful APIs to handle user authentication and secure data retrieval
-                    </p>
-                    <a href="https://github.com/Sufal-kc/QR-code-attendance-.git" class="btn-outline small-btn" target="_blank">View Project &rarr;</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Arrow Button -->
-        <button class="scroll-btn right-btn" onclick="scrollProjects(350)">&#9654;</button>
-    </div>
-    </section>
-    
-<section id="articles" class="section">
-    <h2>Medium Articles</h2>
-    <div class="carousel-wrapper">
-        <!-- Scroll Left Button -->
-        <button class="scroll-btn left-btn" onclick="scrollArticles(-320)">&#9664;</button>
-        
-        <!-- Articles Dynamic Container -->
-        <div class="carousel articles-carousel" id="articles-scroll">
-            <p id="articles-loading" style="color: var(--text-muted); padding: 20px;">Loading articles from Medium...</p>
-        </div>
-
-        <!-- Scroll Right Button -->
-        <button class="scroll-btn right-btn" onclick="scrollArticles(320)">&#9654;</button>
-    </div>
-</section>
-
-
-    <section id="honors" class="section">
-        <h2>Honors and Awards</h2>
-        <div class="honors-grid">
-            <div class="honor-card">
-                <img src="assets/img/honor/kathfest.jpg" alt="Trophy" class="circle-img">
-                <h4>Runner Up</h4>
-                <p>KathFest 3.0 Hackathon</p>
-            </div>
-            <div class="honor-card">
-                <img src="assets/img/honor/Taranga.png" alt="Award" class="circle-img">
-                <h4>Best Thematic Award</h4>
-                <p>Taranga Hardware Hackathon</p>
-            </div>
-            <div class="honor-card">
-                <img src="assets/img/honor/lsp2.png" alt="Trophy" class="circle-img">
-                <h4>Top 60 Learner!</h4>
-                <p>Leapfrog #60DaysOfLearning2026 challenge!</p>
-            </div>
-            <!-- <div class="honor-card">
-                <img src="https://via.placeholder.com/150" alt="Award" class="circle-img">
-                <h4>Best Pitch Award</h4>
-                <p>Deerhack'23</p>
-            </div> -->
-        </div>
-    </section>
-
-    <section id="contact" class="section contact-section">
-        <div class="contact-card">
+        <section id="contact" class="section contact-section">
+            <div class="contact-card">
                 <div class="contact-info">
                     <h2>Let's Connect</h2>
                     <p>Feel free to reach out for collaborations, projects, or just to say hi.</p>
@@ -282,70 +300,82 @@
                         <ul class="social-links">
                             <li>
                                 <a href="https://github.com/Sufal-kc" target="_blank" rel="noopener noreferrer">
-                                    <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                                    <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
                                     <span>Sufal-kc</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="https://www.linkedin.com/in/sufal-kc/" target="_blank" rel="noopener noreferrer">
-                                    <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                    <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                                     <span>Sufal K.C.</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="https://x.com/KcSufal" target="_blank" rel="noopener noreferrer">
-                                    <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                                    <span>@Sufal_kc</span>
+                                    <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                    <span>@KcSufal</span>
                                 </a>
                             </li>
-                            <!-- <li>
-                                <a href="https://www.instagram.com/sufalkc__" target="_blank" rel="noopener noreferrer">
-                                    <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                                    <span>@sufal_kc</span>
-                                </a>
-                            </li> -->
-                            <!-- <li>
-                                <a href="https://www.facebook.com/sufal.chettri.2025" target="_blank" rel="noopener noreferrer">
-                                    <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                                    <span>Sufal K.C.</span>
-                                </a>
-                            </li> -->
                         </ul>
 
-                        <div class="location-detail" style="margin-top: 14px;">
-                            <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <div class="location-detail">
+                            <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
                             <span>Kathmandu, Nepal</span>
                         </div>
                     </div>
+                </div>
 
-    <div class="footer-copy">
-        <p>&copy; <span id="year"></span> Sufal K.C.</p>
-    </div>
-</div>
-            <div class="contact-form">
-                <h2>Send me a message</h2>
-                <form id="contact-form">
-                    <!-- Paste my Web3Forms Access Key here -->
-                    <input type="hidden" name="access_key" value="34ba28f0-e757-4d7f-a1b6-13ea565d9683">
+                <div class="contact-form">
+                    <h2>Send me a message</h2>
+                    <form id="contact-form">
+                        <!-- Web3Forms public access key (safe to expose; it only allows sending to the registered inbox) -->
+                        <input type="hidden" name="access_key" value="34ba28f0-e757-4d7f-a1b6-13ea565d9683">
+                        <input type="hidden" name="subject" value="New message from kcsufal.com.np portfolio">
+                        <input type="hidden" name="from_name" value="Portfolio Contact Form">
+                        <!-- Honeypot spam protection: real users never see or tick this -->
+                        <input type="checkbox" name="botcheck" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
 
-                    <div class="input-group">
-                        <label for="userName">Your Name</label>
-                        <input type="text" id="userName" name="name" placeholder="John Doe" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="userEmail">Your Email</label>
-                        <input type="email" id="userEmail" name="email" placeholder="john@example.com" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="userMessage">Message</label>
-                        <textarea id="userMessage" name="message" rows="3" placeholder="Hello..." required></textarea>
-                    </div>
-                    <button type="submit" id="btn-submit" class="btn-submit">Submit</button>
-                    <p id="form-status" style="margin-top: 12px; font-size: 0.9rem;"></p>
-                </form>
+                        <div class="input-group">
+                            <label for="userName">Your Name</label>
+                            <input type="text" id="userName" name="name" placeholder="John Doe" autocomplete="name" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="userEmail">Your Email</label>
+                            <input type="email" id="userEmail" name="email" placeholder="john@example.com" autocomplete="email" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="userMessage">Message</label>
+                            <textarea id="userMessage" name="message" rows="3" placeholder="Hello..." required></textarea>
+                        </div>
+                        <button type="submit" id="btn-submit" class="btn-submit">Submit</button>
+                        <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; <span id="year"></span> Sufal K.C. · Kathmandu, Nepal</p>
+    </footer>
+
+    <!-- Detail popup shared by Projects, Articles and Honors -->
+    <div id="detail-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc" aria-hidden="true">
+        <div class="modal-content">
+            <button class="modal-close" aria-label="Close">&times;</button>
+            <div class="modal-media"><img id="modal-img" src="" alt=""></div>
+            <div class="modal-body">
+                <p id="modal-meta" class="modal-meta"></p>
+                <h3 id="modal-title"></h3>
+                <p id="modal-desc"></p>
+                <ul id="modal-tags" class="tech-tags" aria-label="Tags"></ul>
+                <a id="modal-action" class="btn-primary modal-action" href="#" target="_blank" rel="noopener"></a>
             </div>
         </div>
-    </section>
+    </div>
+
+    <!-- Connection status toast -->
+    <div id="net-toast" class="net-toast" role="status" aria-live="polite"></div>
 
     <script src="script.js"></script>
 </body>

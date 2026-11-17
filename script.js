@@ -1,85 +1,125 @@
 // ==========================================
-// 1. INITIALIZATION ON DOM READY
+// 0. SHARED HELPERS
 // ==========================================
-document.addEventListener("DOMContentLoaded", () => {
-    // Dynamic Year Update
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function safeStorageGet(key) {
+    try { return localStorage.getItem(key); } catch (e) { return null; }
+}
+
+function safeStorageSet(key, value) {
+    try { localStorage.setItem(key, value); } catch (e) { /* storage unavailable */ }
+}
+
+// ==========================================
+// 1. PAGE PRELOADER
+// ==========================================
+// Shown until the page has loaded, for at least MIN_LOADER_MS so it doesn't
+// just flicker. A fail-safe hides it even if `load` never fires.
+const MIN_LOADER_MS = 800;
+const MAX_LOADER_MS = 6000;
+
+function hidePreloader() {
+    const loader = document.getElementById('preloader');
+    if (!loader || loader.classList.contains('hidden')) return;
+    loader.classList.add('hidden');
+    loader.setAttribute('aria-hidden', 'true');
+    loader.addEventListener('transitionend', () => loader.remove(), { once: true });
+    setTimeout(() => loader.remove(), 800); // in case transitionend doesn't fire
+}
+
+window.addEventListener('load', () => {
+    const elapsed = performance.now();
+    setTimeout(hidePreloader, Math.max(0, MIN_LOADER_MS - elapsed));
+});
+setTimeout(hidePreloader, MAX_LOADER_MS);
+
+// ==========================================
+// 2. INITIALIZATION ON DOM READY
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-    // Start Typewriter Effect
     typeEffect();
-
-    // Setup Infinite Carousel for Projects
     setupInfiniteCarousel('projects-scroll');
+    fetchMediumArticles(); // sets up its own carousel once articles render
 
-    // Fetch Medium Articles (triggers infinite carousel after rendering)
-    fetchMediumArticles();
+    document.querySelectorAll('.scroll-btn[data-carousel]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            scrollCarousel(btn.dataset.carousel, Number(btn.dataset.dir));
+        });
+    });
 });
 
 // ==========================================
-// 2. INFINITE CAROUSEL ENGINE & ARROWS
+// 3. INFINITE CAROUSEL ENGINE & ARROWS
 // ==========================================
+// Width of one full set of original cards (incl. gaps), set per carousel.
+const carouselPeriods = new Map();
+
 function setupInfiniteCarousel(containerId) {
     const container = document.getElementById(containerId);
     if (!container || container.children.length === 0) return;
 
-    // Clone original items to create a seamless infinite loop
     const originalCards = Array.from(container.children);
+
+    // Clone the cards to create a seamless loop. Clones are hidden from
+    // assistive tech and the tab order so content is not announced twice.
+    // (Clicks on clones still work: all card handlers use event delegation.)
     originalCards.forEach(card => {
         const clone = card.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        clone.querySelectorAll('a, button, [tabindex]').forEach(el => el.setAttribute('tabindex', '-1'));
         container.appendChild(clone);
     });
 
-    let isJumping = false;
+    const getPeriod = () => container.children[originalCards.length].offsetLeft - originalCards[0].offsetLeft;
+    carouselPeriods.set(containerId, getPeriod);
+
     container.addEventListener('scroll', () => {
-        if (isJumping) return;
+        const period = getPeriod();
+        if (period <= 0) return;
 
-        const halfWidth = container.scrollWidth / 2;
-
-        // Reset scroll position instantly when reaching half-way boundary
-        if (container.scrollLeft >= halfWidth) {
-            isJumping = true;
-            container.style.scrollBehavior = 'auto';
-            container.scrollLeft -= halfWidth;
-            container.style.scrollBehavior = 'smooth';
-            isJumping = false;
+        // Strict ">" so a jump to exactly `period` (visually identical to 0)
+        // doesn't immediately bounce back and ping-pong.
+        if (container.scrollLeft > period) {
+            jumpScroll(container, container.scrollLeft - period);
         } else if (container.scrollLeft <= 0) {
-            isJumping = true;
-            container.style.scrollBehavior = 'auto';
-            container.scrollLeft += halfWidth;
-            container.style.scrollBehavior = 'smooth';
-            isJumping = false;
+            jumpScroll(container, container.scrollLeft + period);
         }
-    });
+    }, { passive: true });
 }
 
-function scrollProjects(distance) {
-    const container = document.getElementById('projects-scroll');
-    if (container) {
-        container.scrollBy({ left: distance, behavior: 'smooth' });
-    }
+// Move instantly (no smooth animation) so the loop reset is invisible.
+function jumpScroll(container, left) {
+    container.style.scrollBehavior = 'auto';
+    container.scrollLeft = left;
+    container.style.scrollBehavior = '';
 }
 
-function scrollArticles(distance) {
-    const container = document.getElementById('articles-scroll');
-    if (container) {
-        container.scrollBy({ left: distance, behavior: 'smooth' });
+function scrollCarousel(containerId, direction) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const firstCard = container.firstElementChild;
+    const gap = parseFloat(getComputedStyle(container).columnGap) || 0;
+    const step = firstCard ? firstCard.getBoundingClientRect().width + gap : 320;
+
+    // At the very start there is nothing to the left yet: jump to the
+    // matching position in the cloned set first so "previous" works.
+    const getPeriod = carouselPeriods.get(containerId);
+    if (direction < 0 && getPeriod && container.scrollLeft <= 1) {
+        jumpScroll(container, getPeriod());
     }
+
+    container.scrollBy({ left: step * direction, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
 }
 
 // ==========================================
-// 3. NAVIGATION & SMOOTH SCROLLING
+// 4. MOBILE NAVIGATION
 // ==========================================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({ behavior: 'smooth' });
-        }
-    });
-});
-
+// (Smooth scrolling to sections is handled by CSS `scroll-behavior`.)
 const menuToggle = document.querySelector('.menu-toggle');
 const navMenu = document.querySelector('.nav-menu');
 
@@ -98,9 +138,9 @@ if (menuToggle && navMenu) {
 }
 
 // ==========================================
-// 4. TYPEWRITER EFFECT
+// 5. TYPEWRITER EFFECT
 // ==========================================
-const titles = ["Electronics Engineer", "Vice President-SEIS", "AI Enthusiast"];
+const titles = ['Electronics Engineer', 'Vice President-SEIS', 'AI Enthusiast'];
 let titleIndex = 0;
 let charIndex = 0;
 let isDeleting = false;
@@ -110,8 +150,14 @@ const deletingSpeed = 50;
 const pauseDelay = 1500;
 
 function typeEffect() {
-    const typedTextElement = document.getElementById("typed-text");
+    const typedTextElement = document.getElementById('typed-text');
     if (!typedTextElement) return;
+
+    // Respect reduced-motion: show the titles statically instead of animating.
+    if (prefersReducedMotion) {
+        typedTextElement.textContent = titles.join(' · ');
+        return;
+    }
 
     const currentTitle = titles[titleIndex];
 
@@ -138,136 +184,268 @@ function typeEffect() {
 }
 
 // ==========================================
-// 5. THEME TOGGLE
+// 6. THEME TOGGLE (SWITCH)
 // ==========================================
-const themeToggleBtn = document.getElementById('theme-toggle');
+// The initial theme is applied by an inline script in <head> to avoid a
+// flash of the wrong theme; here we only sync the switch and handle changes.
+const themeToggle = document.getElementById('theme-toggle');
 
-if (themeToggleBtn) {
-    const currentTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    updateButtonText(currentTheme);
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (themeToggle) themeToggle.checked = (theme === 'light'); // role="switch": checked = light on
+}
 
-    themeToggleBtn.addEventListener('click', () => {
-        let theme = document.documentElement.getAttribute('data-theme');
-        theme = (theme === 'dark') ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        updateButtonText(theme);
+if (themeToggle) {
+    applyTheme(safeStorageGet('theme') || 'dark');
+
+    themeToggle.addEventListener('change', () => {
+        const newTheme = themeToggle.checked ? 'light' : 'dark';
+        applyTheme(newTheme);
+        safeStorageSet('theme', newTheme);
     });
-
-    function updateButtonText(theme) {
-        themeToggleBtn.textContent = (theme === 'dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
-    }
 }
 
 // ==========================================
-// 6. MEDIUM ARTICLES FETCHER
+// 7. MEDIUM ARTICLES FETCHER
 // ==========================================
+const MEDIUM_PROFILE = 'https://medium.com/@kcsufal1';
+const MEDIUM_FALLBACK_IMAGE = './assets/img/medium/default_medium.webp';
+
+// Shown if the RSS service is down or unreachable. Update when you publish.
+const FALLBACK_ARTICLES = [
+    {
+        title: 'Network Mapper (Nmap)',
+        link: 'https://medium.com/@kcsufal1/network-mapper-nmap-77e8e56d0813',
+        date: '2026-10-28',
+        tags: ['nmap', 'networking', 'network-scanning', 'penetration-testing'],
+        excerpt: 'Simply, Nmap is a network exploration tool that can be used to scan the ports (TCP/UDP) that the hosts are listening on. Nmap allows network admins to find which devices are running on their network, discover open ports and services, and detect vulnerabilities…',
+    },
+    {
+        title: 'Cryptographic Armor: How Hashing, Salting, and Ciphers Actually Shield Your Data',
+        link: 'https://medium.com/@kcsufal1/cryptographic-armor-how-hashing-salting-and-ciphers-actually-shield-your-data-42b8accd5528',
+        date: '2026-06-06',
+        tags: ['cryptography', 'cs50', 'privacy', 'cybersecurity'],
+        excerpt: 'When you transmit data across the internet or save a password on a website, it doesn’t travel through a magical, secure void. It moves through public infrastructure where anyone can theoretically listen in…',
+    },
+    {
+        title: 'The Multi-Factor Illusion',
+        link: 'https://medium.com/@kcsufal1/the-multi-factor-illusion-ff018ed70953',
+        date: '2026-06-03',
+        tags: [],
+        excerpt: 'We’ve all been told that enabling Multi-Factor Authentication (MFA) or Two-Factor Authentication (2FA) makes our digital lives unhackable. As security engineering has evolved, attackers have shifted their approach…',
+    },
+    {
+        title: 'Password? Small guide from me for smart password :(',
+        link: 'https://medium.com/@kcsufal1/password-small-guide-from-me-for-smart-password-436f8a612883',
+        date: '2026-06-01',
+        tags: [],
+        excerpt: 'We use passwords and credentials every single day, yet the mechanics of how we are protected and how attackers bypass that protection are often misunderstood…',
+    },
+];
+
+function isSafeUrl(url) {
+    try {
+        const u = new URL(url, window.location.href);
+        return u.protocol === 'https:' || u.protocol === 'http:';
+    } catch (e) {
+        return false;
+    }
+}
+
+function htmlToText(html, maxLength = 320) {
+    const text = new DOMParser().parseFromString(html || '', 'text/html').body.textContent
+        .replace(/\s+/g, ' ')
+        .trim();
+    if (text.length <= maxLength) return text;
+    return text.slice(0, text.lastIndexOf(' ', maxLength)) + '…';
+}
+
+function formatDate(value) {
+    const date = new Date(String(value).replace(' ', 'T'));
+    return isNaN(date) ? '' : date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+// Builds a card with DOM APIs (no innerHTML) so feed content can't inject markup.
+// Popup details are stored as data-* attributes so carousel clones carry them too.
+function buildArticleCard(article) {
+    const card = document.createElement('div');
+    card.className = 'article-card';
+    card.dataset.link = isSafeUrl(article.link) ? article.link : MEDIUM_PROFILE;
+    card.dataset.excerpt = article.excerpt || '';
+    card.dataset.date = article.date ? formatDate(article.date) : '';
+    card.dataset.tags = JSON.stringify(article.tags || []);
+
+    const imageWrapper = document.createElement('div');
+    imageWrapper.className = 'image-wrapper';
+
+    const img = document.createElement('img');
+    img.src = isSafeUrl(article.image) ? article.image : MEDIUM_FALLBACK_IMAGE;
+    img.alt = '';
+    img.loading = 'lazy';
+    img.width = 300;
+    img.height = 160;
+    // (Load errors are handled by a delegated listener below so carousel clones are covered too.)
+
+    const badge = document.createElement('span');
+    badge.className = 'badge';
+    badge.textContent = 'Medium';
+
+    imageWrapper.append(img, badge);
+
+    const content = document.createElement('div');
+    content.className = 'article-content';
+
+    const title = document.createElement('h4');
+    const opener = document.createElement('button');
+    opener.type = 'button';
+    opener.className = 'card-open';
+    opener.setAttribute('aria-haspopup', 'dialog');
+    opener.textContent = article.title;
+    title.append(opener);
+
+    const readMore = document.createElement('span');
+    readMore.className = 'read-more';
+    readMore.textContent = card.dataset.date ? `${card.dataset.date} · View details →` : 'View details →';
+
+    content.append(title, readMore);
+    card.append(imageWrapper, content);
+    return card;
+}
+
+// Delegated (capture-phase) image error handler: cloneNode() doesn't copy
+// event listeners, so per-image handlers would miss the carousel clones.
+document.addEventListener('error', (e) => {
+    const img = e.target;
+    if (img instanceof HTMLImageElement && img.closest('.article-card') && !img.src.endsWith(MEDIUM_FALLBACK_IMAGE.slice(1))) {
+        img.src = MEDIUM_FALLBACK_IMAGE;
+    }
+}, true);
+
+function renderArticles(container, articles, note) {
+    container.replaceChildren(...articles.map(buildArticleCard));
+    container.setAttribute('aria-busy', 'false');
+    setupInfiniteCarousel(container.id);
+
+    const section = container.closest('section');
+    section?.querySelector('.section-note')?.remove();
+    if (note && section) {
+        const p = document.createElement('p');
+        p.className = 'section-note';
+        p.setAttribute('role', 'status');
+        p.textContent = note;
+        section.querySelector('h2').after(p);
+    }
+}
+
+async function fetchWithTimeout(url, ms = 8000, options = {}) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), ms);
+    try {
+        return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
 async function fetchMediumArticles() {
-    const mediumUsername = 'kcsufal1';
-    const rssFeedUrl = `https://medium.com/feed/@${mediumUsername}`;
+    const rssFeedUrl = `https://medium.com/feed/@kcsufal1`;
     const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssFeedUrl)}`;
-    const fallbackImage = "./assets/img/medium/default_medium.png";
     const container = document.getElementById('articles-scroll');
 
     if (!container) return;
 
     try {
-        const response = await fetch(apiUrl);
+        const response = await fetchWithTimeout(apiUrl);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
 
-        if (data.status === 'ok' && data.items.length > 0) {
-            container.innerHTML = '';
-
-            data.items.forEach(article => {
-                let imgUrl = article.thumbnail;
-                
-                if (!imgUrl) {
-                    const parser = new DOMParser();
-                    const htmlDoc = parser.parseFromString(article.content, 'text/html');
-                    const imgElement = htmlDoc.querySelector('img');
-                    imgUrl = imgElement ? imgElement.src : fallbackImage;
-                }
-
-                const card = document.createElement('div');
-                card.className = 'article-card';
-                card.innerHTML = `
-                    <a href="${article.link}" target="_blank" rel="noopener" class="article-link">
-                        <div class="image-wrapper">
-                            <img src="${imgUrl}" 
-                                 alt="Article cover" 
-                                 onerror="this.onerror=null; this.src='${fallbackImage}';">
-                            <span class="badge">Medium</span>
-                        </div>
-                        <div class="article-content">
-                            <h4>${article.title}</h4>
-                            <span class="read-more">Read Article &rarr;</span>
-                        </div>
-                    </a>
-                `;
-
-                container.appendChild(card);
-            });
-
-            // Activate infinite carousel after dynamic articles load
-            setupInfiniteCarousel('articles-scroll');
-        } else {
-            container.innerHTML = '<p style="color: var(--text-muted);">No articles found.</p>';
+        if (data.status !== 'ok' || !Array.isArray(data.items) || data.items.length === 0) {
+            throw new Error('Feed returned no articles');
         }
+
+        const articles = data.items.map(item => {
+            let image = item.thumbnail;
+            if (!image && item.content) {
+                const htmlDoc = new DOMParser().parseFromString(item.content, 'text/html');
+                // Skip Medium's 1x1 tracking pixel (medium.com/_/stat?...), which browsers block.
+                const realImg = [...htmlDoc.querySelectorAll('img')]
+                    .find(el => !(el.getAttribute('src') || '').includes('/_/stat'));
+                image = realImg?.getAttribute('src') || '';
+            }
+            return {
+                title: item.title,
+                link: item.link,
+                image,
+                date: item.pubDate,
+                tags: (item.categories || []).slice(0, 4),
+                excerpt: htmlToText(item.description || item.content),
+            };
+        });
+
+        renderArticles(container, articles);
     } catch (error) {
-        console.error('Error fetching Medium articles:', error);
-        container.innerHTML = '<p style="color: var(--text-muted);">Failed to load articles.</p>';
+        console.warn('Could not reach the Medium feed, showing saved articles instead:', error);
+        renderArticles(container, FALLBACK_ARTICLES,
+            navigator.onLine === false
+                ? 'You appear to be offline: showing saved articles.'
+                : 'Couldn’t reach Medium right now: showing saved articles.');
     }
 }
 
 // ==========================================
-// 7. CONTACT FORM SUBMISSION
+// 8. CONTACT FORM SUBMISSION (Web3Forms)
 // ==========================================
 const contactForm = document.getElementById('contact-form');
 const formStatus = document.getElementById('form-status');
 const submitBtn = document.getElementById('btn-submit');
 
+function setFormStatus(message, type) {
+    if (!formStatus) return;
+    formStatus.textContent = message;
+    formStatus.classList.remove('success', 'error');
+    if (type) formStatus.classList.add(type);
+}
+
 if (contactForm) {
-    contactForm.addEventListener('submit', async function (e) {
+    contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        if (!navigator.onLine) {
+            setFormStatus('You’re offline. Please reconnect and try again.', 'error');
+            return;
+        }
 
         if (submitBtn) {
             submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
             submitBtn.textContent = 'Sending...';
         }
-        if (formStatus) formStatus.textContent = '';
-
-        const formData = new FormData(contactForm);
+        setFormStatus('', null);
 
         try {
-            const response = await fetch('https://api.web3forms.com/submit', {
+            const response = await fetchWithTimeout('https://api.web3forms.com/submit', 15000, {
                 method: 'POST',
-                body: formData
+                body: new FormData(contactForm),
             });
-
+            if (response.status >= 500) throw new Error(`Server error ${response.status}`);
             const data = await response.json();
 
             if (data.success) {
-                if (formStatus) {
-                    formStatus.style.color = '#4CAF50';
-                    formStatus.textContent = 'Message sent successfully!';
-                }
+                setFormStatus('Message sent successfully!', 'success');
                 contactForm.reset();
             } else {
-                if (formStatus) {
-                    formStatus.style.color = '#f44336';
-                    formStatus.textContent = 'Failed to send message. Please try again.';
-                }
+                setFormStatus('Failed to send message. Please try again.', 'error');
             }
         } catch (error) {
-            if (formStatus) {
-                formStatus.style.color = '#f44336';
-                formStatus.textContent = 'Network error. Please try again later.';
-            }
+            setFormStatus(
+                error.name === 'AbortError'
+                    ? 'The server took too long to respond. Please try again.'
+                    : 'Couldn’t reach the mail server. Please try again later.',
+                'error');
         } finally {
             if (submitBtn) {
                 submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
                 submitBtn.textContent = 'Submit';
             }
         }
@@ -275,34 +453,126 @@ if (contactForm) {
 }
 
 // ==========================================
-// 8. HONOR CARDS MODAL POPUP
+// 9. DETAIL POPUP (Projects, Articles, Honors)
 // ==========================================
-const modal = document.getElementById('image-modal');
+const modal = document.getElementById('detail-modal');
 const modalImg = document.getElementById('modal-img');
-const modalCaption = document.getElementById('modal-caption');
-const modalClose = document.querySelector('.modal-close');
+const modalMeta = document.getElementById('modal-meta');
+const modalTitle = document.getElementById('modal-title');
+const modalDesc = document.getElementById('modal-desc');
+const modalTags = document.getElementById('modal-tags');
+const modalAction = document.getElementById('modal-action');
+const modalClose = modal?.querySelector('.modal-close');
+let lastFocusedElement = null;
 
-document.querySelectorAll('.honor-card').forEach(card => {
-    card.addEventListener('click', () => {
-        const img = card.querySelector('img');
-        const title = card.querySelector('h4')?.textContent || '';
+function openDetail({ image, imageAlt = '', variant = '', meta = '', title = '', description = '', tags = [], actionHref = '', actionText = '' }, trigger) {
+    if (!modal) return;
 
-        if (img && modal && modalImg && modalCaption) {
-            modalImg.src = img.src;
-            modalImg.alt = img.alt || title;
-            modalCaption.textContent = title;
-            modal.classList.add('active');
-            modal.setAttribute('aria-hidden', 'false');
-        }
-    });
-});
+    // Card clones inside carousels are aria-hidden; return focus to the matching original instead.
+    lastFocusedElement = trigger?.closest('[aria-hidden="true"]') ? null : trigger;
+
+    modal.querySelector('.modal-content').dataset.variant = variant;
+    modalImg.src = image || '';
+    modalImg.alt = imageAlt;
+    modalImg.hidden = !image;
+    modalMeta.textContent = meta;
+    modalMeta.hidden = !meta;
+    modalTitle.textContent = title;
+    modalDesc.textContent = description;
+
+    modalTags.replaceChildren(...tags.map(tag => {
+        const li = document.createElement('li');
+        li.textContent = tag;
+        return li;
+    }));
+    modalTags.hidden = tags.length === 0;
+
+    if (actionHref && isSafeUrl(actionHref)) {
+        modalAction.href = actionHref;
+        modalAction.textContent = actionText;
+        modalAction.hidden = false;
+    } else {
+        modalAction.hidden = true;
+    }
+
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    modalClose?.focus();
+}
 
 function closeModal() {
-    if (modal) {
-        modal.classList.remove('active');
-        modal.setAttribute('aria-hidden', 'true');
-    }
+    if (!modal || !modal.classList.contains('active')) return;
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+    lastFocusedElement?.focus();
 }
+
+function openProject(card, trigger) {
+    const link = card.querySelector('.project-info a');
+    openDetail({
+        variant: 'project',
+        image: card.querySelector('img')?.src,
+        imageAlt: card.querySelector('img')?.alt,
+        meta: 'Project',
+        title: card.querySelector('h4')?.textContent.trim(),
+        description: card.querySelector('.project-info p')?.textContent.trim().replace(/\s+/g, ' '),
+        tags: [...card.querySelectorAll('.tech-tags li')].map(li => li.textContent),
+        actionHref: link?.href,
+        actionText: 'View on GitHub →',
+    }, trigger);
+}
+
+function openArticle(card, trigger) {
+    let tags = [];
+    try { tags = JSON.parse(card.dataset.tags || '[]'); } catch (e) { /* ignore */ }
+    openDetail({
+        variant: 'article',
+        image: card.querySelector('img')?.src,
+        meta: ['Medium article', card.dataset.date].filter(Boolean).join(' · '),
+        title: card.querySelector('h4')?.textContent.trim(),
+        description: card.dataset.excerpt || 'Read the full article on Medium.',
+        tags,
+        actionHref: card.dataset.link,
+        actionText: 'Read on Medium →',
+    }, trigger);
+}
+
+function openHonor(card) {
+    const img = card.querySelector('img');
+    openDetail({
+        variant: 'honor',
+        image: img?.src,
+        imageAlt: img?.alt,
+        meta: card.querySelector('p')?.textContent.trim(),
+        title: card.querySelector('h4')?.textContent.trim(),
+        description: card.dataset.description || '',
+    }, card);
+}
+
+// Event delegation so cloned carousel cards (which lose listeners) still work.
+document.addEventListener('click', (e) => {
+    const opener = e.target.closest('.card-open');
+    if (opener) {
+        const project = opener.closest('.project-card');
+        const article = opener.closest('.article-card');
+        if (project) openProject(project, opener);
+        else if (article) openArticle(article, opener);
+        return;
+    }
+
+    const honor = e.target.closest('.honor-card');
+    if (honor) openHonor(honor);
+});
+
+document.addEventListener('keydown', (e) => {
+    const honor = e.target.closest?.('.honor-card');
+    if (honor && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        openHonor(honor);
+    }
+});
 
 if (modalClose) modalClose.addEventListener('click', closeModal);
 
@@ -313,353 +583,59 @@ if (modal) {
 }
 
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+    if (!modal?.classList.contains('active')) return;
+
+    if (e.key === 'Escape') {
         closeModal();
+    } else if (e.key === 'Tab') {
+        // Keep focus cycling inside the dialog.
+        const focusables = [...modal.querySelectorAll('button, a[href]')].filter(el => !el.hidden);
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        } else if (!modal.contains(document.activeElement)) {
+            e.preventDefault();
+            first.focus();
+        }
     }
 });
 
 // ==========================================
-// 5. THEME TOGGLE (SWITCH HANDLER)
+// 10. CONNECTION STATUS & OFFLINE SUPPORT
 // ==========================================
-const themeToggle = document.getElementById('theme-toggle');
+const netToast = document.getElementById('net-toast');
+let toastTimer = null;
 
-if (themeToggle) {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    
-    // Set initial theme attribute
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    
-    // Set checkbox state (checked = light mode)
-    themeToggle.checked = (savedTheme === 'light');
+function showNetToast(message, state) {
+    if (!netToast) return;
+    clearTimeout(toastTimer);
+    netToast.textContent = message;
+    netToast.dataset.state = state;
+    netToast.classList.add('visible');
+    if (state === 'online') {
+        toastTimer = setTimeout(() => netToast.classList.remove('visible'), 3000);
+    }
+}
 
-    themeToggle.addEventListener('change', () => {
-        const newTheme = themeToggle.checked ? 'light' : 'dark';
-        
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
+window.addEventListener('offline', () => {
+    showNetToast('You’re offline. Some content may not load until you reconnect.', 'offline');
+});
+
+window.addEventListener('online', () => {
+    showNetToast('Back online!', 'online');
+});
+
+// Service worker: shows offline.html when the site can't be reached
+// (no connection, or the server returns a 5xx error).
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => {
+            console.warn('Service worker registration failed:', err);
+        });
     });
 }
-// // Smooth Scrolling for navigation links
-// document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-//     anchor.addEventListener('click', function (e) {
-//         e.preventDefault();
-//         document.querySelector(this.getAttribute('href')).scrollIntoView({
-//             behavior: 'smooth'
-//         });
-//     });
-// });
-
-
-// //For dyanamically updating the year in the footer
-// document.getElementById('year').textContent = new Date().getFullYear();
-
-// const menuToggle = document.querySelector('.menu-toggle');
-// const navMenu = document.querySelector('.nav-menu');
-
-// if (menuToggle && navMenu) {
-//     menuToggle.addEventListener('click', () => {
-//         const isOpen = navMenu.classList.toggle('open');
-//         menuToggle.setAttribute('aria-expanded', String(isOpen));
-//     });
-
-//     navMenu.querySelectorAll('a').forEach(link => {
-//         link.addEventListener('click', () => {
-//             navMenu.classList.remove('open');
-//             menuToggle.setAttribute('aria-expanded', 'false');
-//         });
-//     });
-// }
-
-// // Typewriter effect for the Top section
-// const titles = ["Electronics Engineer", "Vice President-SEIS", "AI Enthusiast"];
-// let titleIndex = 0;
-// let charIndex = 0;
-// let isDeleting = false;
-
-// const typedTextElement = document.getElementById("typed-text");
-// const typingSpeed = 100;    // Delay per character when typing
-// const deletingSpeed = 50;   // Delay per character when erasing
-// const pauseDelay = 1500;    // Delay when a full title is typed out
-
-// function typeEffect() {
-//     const currentTitle = titles[titleIndex];
-
-//     if (isDeleting) {
-//         typedTextElement.textContent = currentTitle.substring(0, charIndex - 1);
-//         charIndex--;
-//     } else {
-//         typedTextElement.textContent = currentTitle.substring(0, charIndex + 1);
-//         charIndex++;
-//     }
-
-//     let currentSpeed = isDeleting ? deletingSpeed : typingSpeed;
-
-//     if (!isDeleting && charIndex === currentTitle.length) {
-//         currentSpeed = pauseDelay; // Pause at full word
-//         isDeleting = true;
-//     } else if (isDeleting && charIndex === 0) {
-//         isDeleting = false;
-//         titleIndex = (titleIndex + 1) % titles.length; // Move to next title
-//         currentSpeed = 300; // Brief pause before typing next word
-//     }
-
-//     setTimeout(typeEffect, currentSpeed);
-// }
-
-// document.addEventListener("DOMContentLoaded", typeEffect);
-
-
-// //For project left and right moement
-// function scrollProjects(distance) {
-//     const container = document.getElementById('projects-scroll');
-//     if (container) {
-//         container.scrollBy({
-//             left: distance,
-//             behavior: 'smooth'
-//         });
-//     }
-// }
-
-// //for theme toggle
-// const themeToggleBtn = document.getElementById('theme-toggle');
-
-// if (themeToggleBtn) {
-//     // Check saved theme from localStorage, default to dark
-//     const currentTheme = localStorage.getItem('theme') || 'dark';
-//     document.documentElement.setAttribute('data-theme', currentTheme);
-//     updateButtonText(currentTheme);
-
-//     themeToggleBtn.addEventListener('click', () => {
-//         let theme = document.documentElement.getAttribute('data-theme');
-        
-//         // Toggle theme
-//         if (theme === 'dark') {
-//             theme = 'light';
-//         } else {
-//             theme = 'dark';
-//         }
-        
-//         // Apply theme and save preference
-//         document.documentElement.setAttribute('data-theme', theme);
-//         localStorage.setItem('theme', theme);
-//         updateButtonText(theme);
-//     });
-
-//     function updateButtonText(theme) {
-//         if (theme === 'dark') {
-//             themeToggleBtn.textContent = '☀️ Light Mode';
-//         } else {
-//             themeToggleBtn.textContent = '🌙 Dark Mode';
-//         }
-//     }
-// }
-
-// //SMmoth scrolling for article
-// function scrollArticles(distance) {
-//     const container = document.getElementById('articles-scroll');
-//     if (container) {
-//         container.scrollBy({
-//             left: distance,
-//             behavior: 'smooth'
-//         });
-//     }
-// }
-
-// // // Function to fetch Medium RSS feed and build cards dynamically
-// // async function fetchMediumArticles() {
-// //     const mediumUsername = 'kcsufal1';
-// //     const rssFeedUrl = `https://medium.com/feed/@${mediumUsername}`;
-// //     const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssFeedUrl)}`;
-
-// //     const container = document.getElementById('articles-scroll');
-
-// //     try {
-// //         const response = await fetch(apiUrl);
-// //         const data = await response.json();
-
-// //         if (data.status === 'ok' && data.items.length > 0) {
-// //             container.innerHTML = ''; // Clear loading text
-
-// //             data.items.forEach(article => {
-// //                 // Extract image thumbnail from article HTML content
-// //                 let imgUrl = article.thumbnail;
-                
-// //                 if (!imgUrl) {
-// //                     const parser = new DOMParser();
-// //                     const htmlDoc = parser.parseFromString(article.content, 'text/html');
-// //                     const imgElement = htmlDoc.querySelector('img');
-// //                     imgUrl = imgElement ? imgElement.src : 'https://via.placeholder.com/320x180?text=Medium+Article';
-// //                 }
-
-// //                 // Create Card HTML
-// //                 const card = document.createElement('div');
-// //                 card.className = 'article-card';
-
-// //                 card.innerHTML = `
-// //                     <a href="${article.link}" target="_blank" class="article-link">
-// //                         <div class="image-wrapper">
-// //                             <img src="${imgUrl}" alt="${article.title}">
-// //                             <span class="badge">Medium</span>
-// //                         </div>
-// //                         <div class="article-content">
-// //                             <h4>${article.title}</h4>
-// //                             <span class="read-more">Read Article &rarr;</span>
-// //                         </div>
-// //                     </a>
-// //                 `;
-
-// //                 container.appendChild(card);
-// //             });
-// //         } else {
-// //             container.innerHTML = '<p style="color: var(--text-muted);">No articles found.</p>';
-// //         }
-// //     } catch (error) {
-// //         console.error('Error fetching Medium articles:', error);
-// //         container.innerHTML = '<p style="color: var(--text-muted);">Failed to load articles.</p>';
-// //     }
-// // }
-
-// // Function to fetch Medium RSS feed and build cards dynamically
-// async function fetchMediumArticles() {
-//     const mediumUsername = 'kcsufal1';
-//     const rssFeedUrl = `https://medium.com/feed/@${mediumUsername}`;
-//     const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssFeedUrl)}`;
-    
-//     // High-quality fallback image for articles without media
-//     // const fallbackImage = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop';
-//     const fallbackImage = "./assets/img/medium/default_medium.png"
-
-//     const container = document.getElementById('articles-scroll');
-
-//     try {
-//         const response = await fetch(apiUrl);
-//         const data = await response.json();
-
-//         if (data.status === 'ok' && data.items.length > 0) {
-//             container.innerHTML = ''; // Clear loading text
-
-//             data.items.forEach(article => {
-//                 // Extract image thumbnail from payload or article HTML content
-//                 let imgUrl = article.thumbnail;
-                
-//                 if (!imgUrl) {
-//                     const parser = new DOMParser();
-//                     const htmlDoc = parser.parseFromString(article.content, 'text/html');
-//                     const imgElement = htmlDoc.querySelector('img');
-//                     imgUrl = imgElement ? imgElement.src : fallbackImage;
-//                 }
-
-//                 // Create Card HTML
-//                 const card = document.createElement('div');
-//                 card.className = 'article-card';
-
-//                 card.innerHTML = `
-//                     <a href="${article.link}" target="_blank" rel="noopener" class="article-link">
-//                         <div class="image-wrapper">
-//                             <img src="${imgUrl}" 
-//                                  alt="Article cover" 
-//                                  onerror="this.onerror=null; this.src='${fallbackImage}';">
-//                             <span class="badge">Medium</span>
-//                         </div>
-//                         <div class="article-content">
-//                             <h4>${article.title}</h4>
-//                             <span class="read-more">Read Article &rarr;</span>
-//                         </div>
-//                     </a>
-//                 `;
-
-//                 container.appendChild(card);
-//             });
-//         } else {
-//             container.innerHTML = '<p style="color: var(--text-muted);">No articles found.</p>';
-//         }
-//     } catch (error) {
-//         console.error('Error fetching Medium articles:', error);
-//         container.innerHTML = '<p style="color: var(--text-muted);">Failed to load articles.</p>';
-//     }
-// }
-
-// // Load articles on DOM Ready
-// document.addEventListener('DOMContentLoaded', fetchMediumArticles);
-
-// //for sending message to me using web3form
-// const contactForm = document.getElementById('contact-form');
-// const formStatus = document.getElementById('form-status');
-// const submitBtn = document.getElementById('btn-submit');
-
-// contactForm.addEventListener('submit', async function (e) {
-//     e.preventDefault();
-
-//     submitBtn.disabled = true;
-//     submitBtn.textContent = 'Sending...';
-//     formStatus.textContent = '';
-
-//     const formData = new FormData(contactForm);
-
-//     try {
-//         const response = await fetch('https://api.web3forms.com/submit', {
-//             method: 'POST',
-//             body: formData
-//         });
-
-//         const data = await response.json();
-
-//         if (data.success) {
-//             formStatus.style.color = '#4CAF50';
-//             formStatus.textContent = 'Message sent successfully!';
-//             contactForm.reset();
-//         } else {
-//             formStatus.style.color = '#f44336';
-//             formStatus.textContent = 'Failed to send message. Please try again.';
-//         }
-//     } catch (error) {
-//         formStatus.style.color = '#f44336';
-//         formStatus.textContent = 'Network error. Please try again later.';
-//     } finally {
-//         submitBtn.disabled = false;
-//         submitBtn.textContent = 'Submit';
-//     }
-// });
-// // Honor Cards Image Popup Logic
-// const modal = document.getElementById('image-modal');
-// const modalImg = document.getElementById('modal-img');
-// const modalCaption = document.getElementById('modal-caption');
-// const modalClose = document.querySelector('.modal-close');
-
-// document.querySelectorAll('.honor-card').forEach(card => {
-//     card.addEventListener('click', () => {
-//         const img = card.querySelector('img');
-//         const title = card.querySelector('h4')?.textContent || '';
-
-//         if (img) {
-//             modalImg.src = img.src;
-//             modalImg.alt = img.alt || title;
-//             modalCaption.textContent = title;
-//             modal.classList.add('active');
-//             modal.setAttribute('aria-hidden', 'false');
-//         }
-//     });
-// });
-
-// function closeModal() {
-//     if (modal) {
-//         modal.classList.remove('active');
-//         modal.setAttribute('aria-hidden', 'true');
-//     }
-// }
-
-// if (modalClose) modalClose.addEventListener('click', closeModal);
-
-// // Close modal when clicking on the dark backdrop
-// if (modal) {
-//     modal.addEventListener('click', (e) => {
-//         if (e.target === modal) closeModal();
-//     });
-// }
-
-// // Close modal when pressing Esc
-// document.addEventListener('keydown', (e) => {
-//     if (e.key === 'Escape' && modal?.classList.contains('active')) {
-//         closeModal();
-//     }
-// });
