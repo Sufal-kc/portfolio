@@ -13,6 +13,7 @@
     --success: #4caf50;
     --error: #f44336;
     --nav-height: 80px;
+    --card-height: 300px; /* shared by project + article cards so they match */
 }
 [data-theme="light"] {
     /* Inverted Light Mode (Light background, Dark text) */
@@ -90,8 +91,11 @@ p { color: var(--text-muted); line-height: 1.6; }
 /* ==========================================
    Navigation
    ========================================== */
+/* Mirrored layout: actions on the left, links + name on the right.
+   DOM order is unchanged, so keyboard/screen-reader order stays logical. */
 nav {
     display: flex;
+    flex-direction: row-reverse;
     justify-content: space-between;
     align-items: center;
     gap: 40px;
@@ -114,6 +118,7 @@ nav {
 
 .nav-menu {
     display: flex;
+    flex-direction: row-reverse;
     align-items: center;
     justify-content: space-between;
     gap: 25px;
@@ -139,6 +144,7 @@ nav {
 /* Container for right-aligned nav items */
 .nav-right {
     display: flex;
+    flex-direction: row-reverse;
     align-items: center;
     justify-content: flex-end;
     gap: 15px;
@@ -372,7 +378,7 @@ nav {
     overflow-x: auto;
     scroll-behavior: smooth;
     padding: 20px 0;
-    margin: 0 auto;
+    margin: 0 52px; /* room for the arrow buttons so they don't cover cards */
     scrollbar-width: none; /* Firefox */
 }
 .carousel::-webkit-scrollbar { display: none; } /* Chrome/Safari */
@@ -398,16 +404,19 @@ nav {
 /* ==========================================
    Projects
    ========================================== */
+/* Same height as the Medium article cards (--card-height) */
 .project-card {
     display: flex;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    padding: 24px;
+    padding: 20px;
     border-radius: 16px;
     align-items: center;
-    gap: 30px;
-    min-width: 500px;
-    margin: 0 auto;
+    gap: 24px;
+    width: 560px;
+    height: var(--card-height);
+    flex-shrink: 0;
+    overflow: hidden;
     transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -418,7 +427,7 @@ nav {
 }
 
 .project-card img {
-    width: 250px;
+    width: 200px;
     border-radius: 12px;
     flex-shrink: 0;
     transition: transform 0.3s ease;
@@ -426,18 +435,49 @@ nav {
 
 .project-card:hover img { transform: scale(1.03); }
 
-.project-info h4 { font-size: 1.5rem; margin-bottom: 5px; }
-.project-info p { margin-bottom: 14px; }
+.project-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    height: 100%;
+}
+
+.project-info h4 {
+    font-size: 1.05rem;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.project-info p {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.project-info .btn-outline { align-self: flex-start; }
 
 .tech-tags {
     list-style: none;
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 18px;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    gap: 6px;
+    margin-bottom: 12px;
 }
 
 .tech-tags li {
+    flex-shrink: 0;
     font-size: 0.75rem;
     color: var(--text-muted);
     background: var(--accent);
@@ -456,6 +496,7 @@ nav {
 .article-card {
     min-width: 300px;
     max-width: 300px;
+    height: var(--card-height);
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
@@ -868,11 +909,12 @@ nav {
         display: inline-block;
     }
 
+    /* Mirrored mobile menu: items aligned to the right */
     .nav-menu {
         display: none;
         flex: none;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: flex-end;
         width: 100%;
         gap: 18px;
         padding-top: 14px;
@@ -884,14 +926,14 @@ nav {
 
     .nav-links {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: flex-end;
         width: 100%;
         gap: 12px;
     }
 
     .nav-right {
         width: 100%;
-        justify-content: flex-start;
+        justify-content: flex-start; /* row-reverse: flex-start = right edge */
         gap: 10px;
     }
 
@@ -910,14 +952,31 @@ nav {
         grid-template-columns: 1fr;
     }
 
+    /* Stacked card, still exactly --card-height tall */
     .project-card {
         flex-direction: column;
-        min-width: 85vw;
+        align-items: stretch;
+        width: min(85vw, 340px);
+        padding: 16px;
+        gap: 10px;
     }
 
     .project-card img {
         width: 100%;
+        height: 96px;
+        object-fit: contain;
     }
+
+    .project-info {
+        justify-content: flex-start;
+        flex: 1;
+        min-height: 0;
+    }
+
+    .project-info h4 { font-size: 1rem; margin-bottom: 4px; line-clamp: 2; -webkit-line-clamp: 2; }
+    .project-info p { font-size: 0.85rem; margin-bottom: 8px; line-clamp: 2; -webkit-line-clamp: 2; }
+    .project-info .btn-outline { margin-top: auto; }
+    .tech-tags { display: none; }
 }
 
 @media (max-width: 768px) {
@@ -958,14 +1017,11 @@ nav {
 
     .nav-right {
         flex-direction: column;
-        align-items: stretch;
+        align-items: flex-end;
     }
 
     .scroll-btn { display: none; }
-
-    .project-card { min-width: 100%; }
-
-    .project-info h4 { font-size: 1.2rem; }
+    .carousel { margin: 0; } /* arrows hidden on small phones */
 
     .contact-details { margin-top: 20px; }
 }
